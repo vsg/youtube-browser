@@ -6,7 +6,7 @@ $(function() {
   var g_vid_offset = 1;
   var g_vid_perpage = 25;
 
-  var g_dateVideoItemTemplate = $('#date-video-item-template').html();
+  var g_dateVideoGroupTemplate = $('#video-date-group-template').html();
   var g_videoItemTemplate = $('#video-item-template').html();
 
   var g_filterFunc = function(duration, likes) {
@@ -92,7 +92,7 @@ $(function() {
       var stats = {
         views: e.yt$statistics.viewCount,
         favorites: e.yt$statistics.favoriteCount,
-        comments: e.gd$comments.gd$feedLink.countHint,
+        comments: (e.gd$comments ? e.gd$comments.gd$feedLink.countHint : ''),
         likes: (e.yt$rating ? e.yt$rating.numLikes : ''),
         dislikes: (e.yt$rating ? e.yt$rating.numDislikes : '')
       };
@@ -117,14 +117,17 @@ $(function() {
 
   function appendVideos(video_infos) {
     video_infos.forEach(function(vi) {
-      if (g_vid_date != vi.published) {
-        var t = $(Mustache.render(g_dateVideoItemTemplate, {date: vi.published}));
-        t.appendTo('.date-video-entries');
-        g_vid_date = vi.published;
+      var lastGroup = $('.video-date-group:last-child');
+      var lastDate = $('.date', lastGroup).text();
 
-        $('.entry-date', t).click(function() {
-          $(this).next().toggle();
+      if (lastDate != vi.published) {
+        var t = $(Mustache.render(g_dateVideoGroupTemplate, {date: vi.published}));
+
+        $('.date', t).click(function() {
+          $(this).next().toggle(); // toggle '.videos'
         });
+
+        t.appendTo('.video-entries');
       }
 
       var view = $.extend({}, vi);
@@ -138,16 +141,14 @@ $(function() {
       view.duration = duration;
 
       var t = $(Mustache.render(g_videoItemTemplate, view));
-      t.appendTo('.entry-item:last-child .list-videos');
 
-      $('.entry-item:last-child .entry-date + ul').show();
-
-      $('.expand-tag', t).click(function(){
+      $('.expand-tag', t).click(function() {
         expandVideoItem(t);
-        return false;
       });
 
       loadVideoStats(vi.video_id, t);
+
+      $('.videos', lastGroup).show().append(t);
     });
   }
 
@@ -164,7 +165,7 @@ $(function() {
           published: e.published.$t.substring(0, 10), 
           title: e.media$group.media$title.$t, 
           description: e.media$group.media$description.$t, 
-          comments: e.gd$comments.gd$feedLink.countHint,
+          comments: (e.gd$comments ? e.gd$comments.gd$feedLink.countHint : ''),
           url: e.media$group.media$content[0].url,
           duration: e.media$group.media$content[0].duration,
           thumbnail: e.media$group.media$thumbnail[0].url
@@ -204,9 +205,11 @@ $(function() {
   });
 
   $('#load-videos').click(function() {
-    $('.date-video-entries').empty();
+    $('.video-entries').empty();
     
-    g_vid_yt_user = $('#yt-user-selection-box').val();
+    var user = $('#yt-user-selection-box').val();
+    
+    g_vid_yt_user = user;
     g_vid_date = null;
 
     g_vid_offset = 1;
@@ -219,7 +222,6 @@ $(function() {
 
   $('#load-more').click(function() {
     loadMoreVideos();
-    return false;
   });
 
 });
