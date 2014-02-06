@@ -287,12 +287,6 @@ $(function() {
     applyFilter(g_filterFunc);
   });
 
-  g_savedUsers.update({'name': 'HromadskeTV', 'shortThreshold': '', 'longThreshold': ''});
-  g_savedUsers.update({'name': '5channel', 'shortThreshold': '', 'longThreshold': ''});
-  g_savedUsers.update({'name': 'tvzikua', 'shortThreshold': '', 'longThreshold': ''});
-  g_savedUsers.update({'name': 'RadioSvobodaOrg', 'shortThreshold': '', 'longThreshold': ''});
-  g_savedUsers.update({'name': 'KievForum', 'shortThreshold': '', 'longThreshold': ''});
-
   g_savedUsers.display();
 
   $('#load-videos').click(function() {

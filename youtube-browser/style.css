@@ -3,7 +3,8 @@ article,aside,details,figcaption,figure,footer,header,hgroup,nav,section,summary
 
 .settings-panel {
   font-size: 18px;
-  margin: 10px 0 0 50px;
+  margin-top: 10px;
+  margin-left: 50px;
 }
 
 .settings-section {
@@ -31,7 +32,7 @@ article,aside,details,figcaption,figure,footer,header,hgroup,nav,section,summary
 .yt-user-tag-list {
   list-style: none;
   font-size: 70%;
-  padding: 0 0 0 10px;
+  padding-left: 10px;
   max-width: 400px;
   overflow: hidden;
 }
