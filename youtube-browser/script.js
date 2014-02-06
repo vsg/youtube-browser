@@ -1,5 +1,7 @@
 $(function() {
   
+  $.cookie.json = true;
+
   var g_vid_yt_user;
   var g_vid_date;
 
@@ -13,6 +15,59 @@ $(function() {
     if (duration < 15 && likes < parseInt($('#short-video-threshold').val(), 10)) return true;
     if (duration >= 15 && likes < parseInt($('#long-video-threshold').val(), 10)) return true;
     return false;
+  };
+
+  var g_savedUsers = {
+    get: function(userName) {
+      var users = $.cookie('users') || [];
+      for (var i = 0; i < users.length; i++) {
+        if (users[i].name == userName) {
+          return users[i];
+        }
+      }
+      return null;
+    },
+
+    update: function(userInfo) {
+      var users = $.cookie('users') || [];
+      var found = false;
+      for (var i = 0; i < users.length; i++) {
+        if (users[i].name == userInfo.name) {
+          users[i] = userInfo;
+          found = true;
+        }
+      }
+      if (!found) {
+        users.push(userInfo);
+      }
+      $.cookie('users', users);
+    },
+    
+    remove: function(userName) {
+      var users = $.cookie('users') || [];
+      for (var i = 0; i < users.length; i++) {
+        if (users[i].name == userName) {
+          users.splice(i, 1);
+          break;
+        }
+      }
+      $.cookie('users', users);
+    },
+    
+    display: function() {
+      var users = $.cookie('users') || [];
+      var list = $('.yt-user-tag-list');
+      list.empty();
+      users.forEach(function(user) {
+        var loadFunc = function() { loadVideos(user); };
+        var closeFunc = function() { g_savedUsers.remove(user.name); g_savedUsers.display(); };
+
+        var item = tag('li', {'class': 'yt-user-tag'});
+        item.append(tag('a', {'class': 'value', href: '#', text: user.name, click: loadFunc}));
+        item.append(tag('a', {'class': 'close', href: '#', text: 'x', click: closeFunc}));
+        list.append(item);
+      });
+    }
   };
 
 
@@ -152,8 +207,31 @@ $(function() {
     });
   }
 
+  function loadVideos(userInfo) {
+    $('.video-entries').empty();
+    
+    if (userInfo) {
+      $('#yt-user-selection-box').val(userInfo.name);
+      $('#short-video-threshold').val(userInfo.shortThreshold);
+      $('#long-video-threshold').val(userInfo.longThreshold);
+    } else {
+      var user = $('#yt-user-selection-box').val();
+      var shortThreshold = $('#short-video-threshold').val();
+      var longThreshold = $('#long-video-threshold').val();
+      userInfo = {'name': user, 'shortThreshold': shortThreshold, 'longThreshold': longThreshold};
+    }
+
+    g_vid_yt_user = userInfo;
+    g_vid_date = null;
+
+    g_vid_offset = 1;
+    g_vid_perpage = 50;
+
+    loadMoreVideos();
+  }
+
   function loadMoreVideos() {
-    var url = 'https://gdata.youtube.com/feeds/api/users/' + g_vid_yt_user 
+    var url = 'https://gdata.youtube.com/feeds/api/users/' + g_vid_yt_user.name
       + '/uploads?alt=json&start-index=' + g_vid_offset + '&max-results=' + g_vid_perpage;
 
     $.ajax({url: url, dataType: "json"}).done(function(data) {
@@ -173,6 +251,11 @@ $(function() {
       });
 
       appendVideos(video_infos);
+
+      g_savedUsers.update(g_vid_yt_user);
+      g_savedUsers.display();
+
+      $('.load-more-wrapper').show();
 
       g_vid_offset += g_vid_perpage;
     });
@@ -204,20 +287,16 @@ $(function() {
     applyFilter(g_filterFunc);
   });
 
+  g_savedUsers.update({'name': 'HromadskeTV', 'shortThreshold': '', 'longThreshold': ''});
+  g_savedUsers.update({'name': '5channel', 'shortThreshold': '', 'longThreshold': ''});
+  g_savedUsers.update({'name': 'tvzikua', 'shortThreshold': '', 'longThreshold': ''});
+  g_savedUsers.update({'name': 'RadioSvobodaOrg', 'shortThreshold': '', 'longThreshold': ''});
+  g_savedUsers.update({'name': 'KievForum', 'shortThreshold': '', 'longThreshold': ''});
+
+  g_savedUsers.display();
+
   $('#load-videos').click(function() {
-    $('.video-entries').empty();
-    
-    var user = $('#yt-user-selection-box').val();
-    
-    g_vid_yt_user = user;
-    g_vid_date = null;
-
-    g_vid_offset = 1;
-    g_vid_perpage = 50;
-
-    loadMoreVideos();
-
-    $('.load-more-wrapper').show();
+    loadVideos();
   });
 
   $('#load-more').click(function() {

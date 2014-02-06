@@ -3,13 +3,20 @@ article,aside,details,figcaption,figure,footer,header,hgroup,nav,section,summary
 
 .settings-panel {
   font-size: 18px;
-  margin-left: 50px;
-  margin-top: 10px;
+  margin: 10px 0 0 50px;
 }
 
 .settings-section {
-  margin: 5px 20px;
   float: left;
+  margin: 5px 0;
+}
+
+.settings-section.yt-user-settings {
+  margin-left: 40px;
+}
+
+.settings-section.yt-user-settings button#load-videos {
+  margin-right: 40px;
 }
 
 .settings-section.threshold-settings label {
@@ -19,6 +26,51 @@ article,aside,details,figcaption,figure,footer,header,hgroup,nav,section,summary
 
 .settings-section.threshold-settings input {
   text-align: right;
+}
+
+.yt-user-tag-list {
+  list-style: none;
+  font-size: 70%;
+  padding: 0 0 0 10px;
+  max-width: 400px;
+  overflow: hidden;
+}
+
+.yt-user-tag {
+  position: relative;
+  float: left;
+  display: table;
+  border-collapse: separate;
+  border-spacing: 3px 0;
+  margin: 1px 2px 0 0;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+  border: solid 1px #d6d6d6;
+  background-color: #f4f5f5;
+  background-image: -webkit-gradient(linear,left top,left bottom,color-stop(0%,#f4f5f5),color-stop(100%,#dfdddd));
+  background-image: -webkit-linear-gradient(top,#f4f5f5,#dfdddd);
+  background-image: -moz-linear-gradient(top,#f4f5f5,#dfdddd);
+  background-image: -ms-linear-gradient(top,#f4f5f5,#dfdddd);
+  background-image: -o-linear-gradient(top,#f4f5f5,#dfdddd);
+  background-image: linear-gradient(top,#f4f5f5,#dfdddd);
+  filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#f4f5f5,endColorstr=#dfdddd);
+}
+
+.yt-user-tag a {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+  text-decoration: none;
+}
+
+.yt-user-tag .close {
+  color: #d00;
+  padding-bottom: 2px;
+}
+
+.yt-user-tag .value {
+  color: #000;
 }
 
 .video-entries {
