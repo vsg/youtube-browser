@@ -59,8 +59,8 @@ $(function() {
       var list = $('.yt-user-tag-list');
       list.empty();
       users.forEach(function(user) {
-        var loadFunc = function() { loadVideos(user); };
-        var closeFunc = function() { g_savedUsers.remove(user.name); g_savedUsers.display(); };
+        var loadFunc = function() { loadVideos(user); return false; };
+        var closeFunc = function() { g_savedUsers.remove(user.name); g_savedUsers.display(); return false; };
 
         var item = tag('li', {'class': 'yt-user-tag'});
         item.append(tag('a', {'class': 'value', href: '#', text: user.name, click: loadFunc}));
@@ -180,6 +180,7 @@ $(function() {
 
         $('.date', t).click(function() {
           $(this).next().toggle(); // toggle '.videos'
+          return false;
         });
 
         t.appendTo('.video-entries');
@@ -199,6 +200,7 @@ $(function() {
 
       $('.expand-tag', t).click(function() {
         expandVideoItem(t);
+        return false;
       });
 
       loadVideoStats(vi.video_id, t);
@@ -291,10 +293,12 @@ $(function() {
 
   $('#load-videos').click(function() {
     loadVideos();
+    return false;
   });
 
   $('#load-more').click(function() {
     loadMoreVideos();
+    return false;
   });
 
 });
