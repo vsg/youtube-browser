@@ -1,7 +1,5 @@
 $(function() {
   
-  $.cookie.json = true;
-
   var g_vid_yt_user;
   var g_vid_date;
 
@@ -19,7 +17,7 @@ $(function() {
 
   var g_savedUsers = {
     get: function(userName) {
-      var users = $.cookie('users') || [];
+      var users = $.localStorage.get('users') || [];
       for (var i = 0; i < users.length; i++) {
         if (users[i].name == userName) {
           return users[i];
@@ -29,7 +27,7 @@ $(function() {
     },
 
     update: function(userInfo) {
-      var users = $.cookie('users') || [];
+      var users = $.localStorage.get('users') || [];
       var found = false;
       for (var i = 0; i < users.length; i++) {
         if (users[i].name == userInfo.name) {
@@ -40,22 +38,22 @@ $(function() {
       if (!found) {
         users.push(userInfo);
       }
-      $.cookie('users', users);
+      $.localStorage.set('users', users);
     },
     
     remove: function(userName) {
-      var users = $.cookie('users') || [];
+      var users = $.localStorage.get('users') || [];
       for (var i = 0; i < users.length; i++) {
         if (users[i].name == userName) {
           users.splice(i, 1);
           break;
         }
       }
-      $.cookie('users', users);
+      $.localStorage.set('users', users);
     },
     
     display: function() {
-      var users = $.cookie('users') || [];
+      var users = $.localStorage.get('users') || [];
       var list = $('.yt-user-tag-list');
       list.empty();
       users.forEach(function(user) {
